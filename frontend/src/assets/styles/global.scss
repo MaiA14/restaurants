@@ -1,0 +1,15 @@
+// Setup
+@import "setup/variables.scss";
+@import "setup/_mixins.scss";
+
+// Basics
+@import "basics/base.scss";
+@import "basics/buttons.scss";
+@import "basics/_inputs.scss";
+@import "basics/typography.scss";
+
+// Components
+@import "components/_home_page.scss";
+@import "components/_card.scss";
+@import "components/_header.scss";
+@import "components/_login.scss";

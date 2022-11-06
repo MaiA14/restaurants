@@ -1,0 +1,33 @@
+.load-btns{
+    display: flex;
+    flex-direction: row;
+}
+
+.app-button {
+    width: 200px;
+    height: 50px;
+    background-color: $clr1;
+    color: $clr3;
+    font-size: 17px;
+    font-family: 'OpenSans-Regular';
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.app-button:hover {
+    background-color: $clr1;
+    opacity: 0.8;
+    transition: opacity 0.9s ease-in-out;
+}
+
+.swal-button {
+    background-color: $clr1;
+}
+
+.swal-button:not([disabled]):hover {
+    background-color: $clr2;
+    opacity: .8;
+    transition: opacity 0.5s ease-in-out;
+}
