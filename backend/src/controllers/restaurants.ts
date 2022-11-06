@@ -108,10 +108,20 @@ export default class RestaurantsController {
         }
 
         try {
+            let where : any = {};
+            where['name'] = { operand: OPERANDS.EQUALS, value: req.body.name };
+            const restaurant = await new DBService().get(COLLECTION.RESTAURANTS, null, where);
+
+            // aviod adding restaurant with the same name
+            if (restaurant.length > 0) {
+                res.status(500).send('Error 2 - restaurant already exists');
+                return; 
+            }
+
             const newRestaurants = await new DBService().add(COLLECTION.RESTAURANTS, req.body);
             res.send(newRestaurants);
         } catch (e) {
-            res.status(404).send('Error 2 - could not add new restaurant');
+            res.status(404).send('Error 3 - could not add new restaurant');
             console.log('cannot get restaurant', e);
             return;
         }

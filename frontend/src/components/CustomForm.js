@@ -20,6 +20,11 @@ const CustomForm = ({ onSubmit, mode, restaurant }) => {
             onSubmit({id: restaurant.id, ...data});
         } else {
             onSubmit(data);
+            // clear form 
+            setName("");
+            setCountry("");
+            setImg("");
+            setChain("");
         }
         handleClose();
     }

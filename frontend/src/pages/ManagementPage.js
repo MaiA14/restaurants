@@ -37,6 +37,8 @@ export const ManagementPage = () => {
     } catch (e) {
       if (e.response.status === 401) { // the specified user has no premission to delete
         swal("Premission denied.");
+      } else if (e.response.status === 500) {
+        swal("Restaurant already exists");
       }
     }
   }
