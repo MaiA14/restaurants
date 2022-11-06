@@ -35,7 +35,7 @@ nodemon npm run start
 
 
 App includes authentication 
-![Image](https://res.cloudinary.com/dtwqtpteb/image/upload/v1667694795/f0sorkhrjtppnd29snal.png
+![Image](https://res.cloudinary.com/dtwqtpteb/image/upload/v1667695445/myvqcaqp8fbocmhqmhrd.png
 )
 
 Successfuly authentication leads to management page
