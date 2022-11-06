@@ -35,19 +35,19 @@ nodemon npm run start
 
 
 App includes authentication 
-![Image](https://res.cloudinary.com/dtwqtpteb/image/upload/v1667694207/t0aovqolgcigyuof473y.png
+![Image](https://res.cloudinary.com/dtwqtpteb/image/upload/v1667694795/f0sorkhrjtppnd29snal.png
 )
 
 Successfuly authentication leads to management page
-![Image](https://res.cloudinary.com/dtwqtpteb/image/upload/v1667694207/c6a9blgesvskxoa2t6uy.png
+![Image](https://res.cloudinary.com/dtwqtpteb/image/upload/v1667694795/j4f9tcxyziw5qdknorxp.png
 )
 
 In case one of the details is incorrect, you are blocked by the system with a message
-![Image](https://res.cloudinary.com/dtwqtpteb/image/upload/v1667694383/mjxfwwvwnscag7ftiexl.png
+![Image](https://res.cloudinary.com/dtwqtpteb/image/upload/v1667694795/ujxgtteqbksjxfdaduk8.png
 )
 
 In case the logged in user has no premission due to his role, he won't be able to do some actions. In the example, Stav is a waiter and waiter has no premission to delete restaurant.
-![Image](https://res.cloudinary.com/dtwqtpteb/image/upload/v1667694460/jmgj3n3owmvpjqhe3ofx.png
+![Image](https://res.cloudinary.com/dtwqtpteb/image/upload/v1667694795/j3ndjif1g7osve8nxypb.png
 )
 
 
