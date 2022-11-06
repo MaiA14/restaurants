@@ -33,8 +33,6 @@ Run Client with the command:
 nodemon npm run start
 ```
 
-
-App includes authentication 
 ![Image](https://res.cloudinary.com/dtwqtpteb/image/upload/v1667695518/n078fgb8z510xheyyc8u.png
 )
 
