@@ -10,8 +10,8 @@ const login = async (credentials) => {
 }
 
 const signup = async (credentials) => {
-  const user = HttpService.post(`${authEndpoint}/signup`, credentials);
-  // return _handleLogin(user);
+  console.log('signup');
+  HttpService.post(`${authEndpoint}/signup`, credentials);
 }
 
 const logout = async () => {

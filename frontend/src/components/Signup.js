@@ -3,11 +3,13 @@ import UserService from '../services/UserService';
 
 export class Signup extends Component {
   state = {
-    fullName: '',
-    password: '',
+    name: '',
     email: '',
-    phone: '',
+    role: '',
+    restaurant: '',
+    password: ''
   };
+
 
   changeInput = ev => {
     let field = ev.target.name;
@@ -16,11 +18,13 @@ export class Signup extends Component {
   };
 
   onSignup = async () => {
+    console.log('test')
     const user = this.state;
-    if (user.fullName &&  user.password && user.email && user.phone) {
+    console.log(user.name, user.email, user.role ,user.password ,user.restaurant);
+    if (user.name &&  user.email && user.role && user.password && user.restaurant) {
+      console.log('innn')
         try {
             await UserService.signup(user);
-            this.props.history.push('/management');
         }
         catch(e) {
             console.error(e);
@@ -36,14 +40,16 @@ export class Signup extends Component {
     return (
         <div className="container" onKeyUp={(ev) => this.onCheckForm(ev)}>
           <div className="inputs-wrapper">
-            <input type='text' className="form-input" placeholder='Full Name'
-            onChange={this.changeInput} name='fullName'></input>
+            <input type='text' className="form-input" placeholder='Name'
+            onChange={this.changeInput} name='name'></input>
             <input type='password' className="form-input" placeholder='Password'
             onChange={this.changeInput} name='password'></input>
-            <input type='phone' className="form-input" placeholder='Phone' 
-            onChange={this.changeInput} name='phone'></input>
-            <input type='email' className="form-input" placeholder='email' 
+            <input type='text' className="form-input" placeholder='Role' 
+            onChange={this.changeInput} name='role'></input>
+            <input type='email' className="form-input" placeholder='Email' 
             onChange={this.changeInput} name='email'></input>
+                  <input type='text' className="form-input" placeholder='Restaurant' 
+            onChange={this.changeInput} name='restaurant'></input>
             <button className="app-button" onClick={this.onSignup}>Signup</button>
             </div>
         </div>
