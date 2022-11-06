@@ -20,9 +20,7 @@ export class Signup extends Component {
   onSignup = async () => {
     console.log('test')
     const user = this.state;
-    console.log(user.name, user.email, user.role ,user.password ,user.restaurant);
     if (user.name &&  user.email && user.role && user.password && user.restaurant) {
-      console.log('innn')
         try {
             await UserService.signup(user);
         }
