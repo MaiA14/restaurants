@@ -15,13 +15,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = __importDefault(require("./app"));
 const config_1 = __importDefault(require("./config"));
 const constants_1 = require("./constants");
+const auth_1 = __importDefault(require("./controllers/auth"));
+const restaurants_1 = __importDefault(require("./controllers/restaurants"));
 const dbService_1 = require("./db/dbService");
 let dbType = constants_1.DBS.MONGO;
 let db = new dbService_1.DBService(dbType);
 const controllers = {
-// [MessagesController.controllerName]: new MessagesController(),
-// [OrdersController.controllerName]: new OrdersController(),
-// [CustomersController.controllerName] : new CustomersController()
+    [auth_1.default.controllerName]: new auth_1.default(),
+    [restaurants_1.default.controllerName]: new restaurants_1.default()
 };
 // choose db
 switch (dbType) {

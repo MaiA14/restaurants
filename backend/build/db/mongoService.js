@@ -17,7 +17,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var MongoService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MongoService = void 0;
 const mongodb_1 = require("mongodb");
@@ -25,32 +24,22 @@ const _ = require("lodash");
 const config_1 = __importDefault(require("../config"));
 const constants_1 = require("../constants");
 const singleton_1 = require("../decorators/singleton");
-let MongoService = MongoService_1 = class MongoService {
+let MongoService = class MongoService {
     constructor() {
-        this.mongo = null;
         this.mongoClient = new mongodb_1.MongoClient(`mongodb://${config_1.default.server.ip}:27017`);
     }
     connect() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                if (MongoService_1.isConnectingToDBProcess)
-                    return false;
-                MongoService_1.isConnectingToDBProcess = true;
-                const mongoDbName = process.env.MONGO_URI || `${this.mongoClient}/${config_1.default.server.dbName}`;
-                console.error("mongoDbName", mongoDbName);
+                this.mongoDb = this.mongoClient.db(config_1.default.server.dbName);
                 yield this.mongoClient.connect();
-                this.mongo = this.mongoClient.connection;
-                console.log('mongo is connected');
+                console.log('Mongo is connected');
             }
             catch (e) {
-                // console.log('connect - could not connect to db', e);
-                // MongoService.isConnectingToDBProcess = false;
+                console.log('connect - could not connect to db', e.stack);
                 console.log('mongo existing app 2');
                 process.exit(1);
             }
-            console.log('mongo isConnectingToDBProcess free');
-            MongoService_1.isConnectingToDBProcess = false;
-            return true;
         });
     }
     disconnect() {
@@ -58,7 +47,7 @@ let MongoService = MongoService_1 = class MongoService {
             clearInterval(this.jobInterval);
             setTimeout(() => {
                 console.log('disconnect');
-                this.mongo.close();
+                this.mongoDb.close();
             }, 5000);
         });
     }
@@ -80,14 +69,19 @@ let MongoService = MongoService_1 = class MongoService {
                     op = '$eq';
                 }
                 break;
+            case constants_1.OPERANDS.NOT_EQUALS: {
+                op = '$ne';
+            }
         }
         return op;
     }
     get(collectionName, docId, where, orderBy, limit) {
         return __awaiter(this, void 0, void 0, function* () {
             let query;
+            // for sure single document 
             if (docId) {
-                query = yield this.mongo.collection(collectionName).findOne({ id: docId });
+                query = yield this.mongoDb.collection(collectionName).findOne({ id: docId });
+                console.log('query', query);
                 const result = query;
                 if (!result) {
                     return null;
@@ -109,39 +103,13 @@ let MongoService = MongoService_1 = class MongoService {
                     }
                     else {
                         condition[terms[i]] = { [this.getOperand(where[terms[i]].operand)]: where[terms[i]].value };
+                        console.log('conditions', condition);
                     }
                 }
-                if (orderBy) {
-                    switch (orderBy.direction) {
-                        case constants_1.ORDER_BY_DIRECTION.DESC:
-                            {
-                                orderBy.direction = -1;
-                            }
-                            break;
-                        default:
-                            {
-                                orderBy.direction = 1;
-                            }
-                            break;
-                    }
-                }
-                let orderByCondition;
-                if (!orderBy) {
-                    orderByCondition = { "id": 1 };
-                }
-                else if (orderBy && orderBy.fieldName && orderBy.direction) {
-                    orderByCondition = { [orderBy.fieldName]: orderBy.direction };
-                }
-                else {
-                    orderByCondition = { [orderBy.fieldName]: 1 };
-                }
-                const limitCondition = limit ? limit : 0;
                 let results;
                 try {
-                    results = yield this.mongo.collection(collectionName)
+                    results = yield this.mongoDb.collection(collectionName)
                         .find(condition)
-                        .sort(orderByCondition)
-                        .limit(limitCondition)
                         .toArray();
                 }
                 catch (_a) { }
@@ -162,36 +130,9 @@ let MongoService = MongoService_1 = class MongoService {
             else {
                 // get all collection
                 let results;
-                const limitCondition = limit ? limit : 0; // if there is limit, use the limit, otherwise no limit = 0
-                if (orderBy || limitCondition) {
-                    switch (orderBy.direction) {
-                        case constants_1.ORDER_BY_DIRECTION.DESC:
-                            {
-                                orderBy.direction = -1;
-                            }
-                            break;
-                        case constants_1.ORDER_BY_DIRECTION.ASC:
-                            {
-                                orderBy.direction = 1;
-                            }
-                            break;
-                    }
-                }
-                let orderByCondition;
-                if (!orderBy) {
-                    orderByCondition = { "id": 1 };
-                }
-                else if (orderBy && orderBy.fieldName && orderBy.direction) {
-                    orderByCondition = { [orderBy.fieldName]: orderBy.direction };
-                }
-                else {
-                    orderByCondition = { [orderBy.fieldName]: 1 };
-                }
                 try {
-                    results = yield this.mongo.collection(collectionName)
+                    results = yield this.mongoDb.collection(collectionName)
                         .find({})
-                        .sort(orderByCondition)
-                        .limit(limitCondition)
                         .toArray();
                 }
                 catch (_b) { }
@@ -223,10 +164,10 @@ let MongoService = MongoService_1 = class MongoService {
                 delete data._id;
             }
             try {
-                const doc = yield this.mongo.collection(collectionName).insertOne(Object.assign({}, data));
+                const doc = yield this.mongoDb.collection(collectionName).insertOne(Object.assign({}, data));
                 data.id = doc.insertedId.toString();
-                yield this.mongo.collection(collectionName).updateOne({ _id: doc.insertedId }, { $set: data }, { upsert: false });
-                const addedDoc = yield this.mongo.collection(collectionName).findOne({ _id: doc.insertedId });
+                yield this.mongoDb.collection(collectionName).updateOne({ _id: doc.insertedId }, { $set: data }, { upsert: false });
+                const addedDoc = yield this.mongoDb.collection(collectionName).findOne({ _id: doc.insertedId });
                 console.log('MongoService add addedDoc', addedDoc);
                 return addedDoc;
             }
@@ -235,36 +176,34 @@ let MongoService = MongoService_1 = class MongoService {
             }
         });
     }
-    set(collectionName, docId, dataArg, shouldMerge, subCollectionOptions, shouldNotTriggerEvent) {
+    set(collectionName, docId, dataArg, shouldMerge) {
         return __awaiter(this, void 0, void 0, function* () {
-            let collectionNameLocal = collectionName;
-            let docIdLocal = docId;
             const data = _.cloneDeep(dataArg);
             try {
-                const doc = yield this.mongo.collection(collectionNameLocal).findOne({ id: docIdLocal });
+                const doc = yield this.mongoDb.collection(collectionName).findOne({ id: docId });
                 if (doc !== null) { // update document
-                    data.id = docIdLocal;
+                    data.id = docId;
                     if (shouldMerge) {
                         const mergedData = _.merge({}, doc, data); // merge partly data with existing doc
                         delete mergedData._id;
-                        yield this.mongo.collection(collectionNameLocal).updateOne({ _id: doc._id }, { $set: Object.assign({}, mergedData) }, { upsert: false });
+                        yield this.mongoDb.collection(collectionName).updateOne({ _id: doc._id }, { $set: Object.assign({}, mergedData) }, { upsert: false });
                     }
                     else {
-                        yield this.mongo.collection(collectionNameLocal).updateOne({ _id: doc._id }, { $set: Object.assign({}, data) }, { upsert: false });
+                        yield this.mongoDb.collection(collectionName).updateOne({ _id: doc._id }, { $set: Object.assign({}, data) }, { upsert: false });
                     }
-                    const updatedDoc = yield this.mongo.collection(collectionNameLocal).findOne({ id: docIdLocal });
+                    const updatedDoc = yield this.mongoDb.collection(collectionName).findOne({ id: docId });
                     return updatedDoc;
                 }
                 else {
-                    data.id = docIdLocal; // set new document with custom id
+                    data.id = docId; // set new document with custom id
                     delete data._id;
-                    yield this.mongo.collection(collectionNameLocal).insertOne(Object.assign({}, data)); // returns acknolodege
-                    const newDocUpdated = yield this.mongo.collection(collectionNameLocal).findOne({ id: docIdLocal });
+                    yield this.mongoDb.collection(collectionName).insertOne(Object.assign({}, data)); // returns acknolodege
+                    const newDocUpdated = yield this.mongoDb.collection(collectionName).findOne({ id: docId });
                     return newDocUpdated;
                 }
             }
             catch (e) {
-                console.log('MongoService set - could not set data', collectionNameLocal, docId, JSON.stringify(e));
+                console.log('MongoService set - could not set data', collectionName, docId, JSON.stringify(e));
             }
         });
     }
@@ -272,7 +211,7 @@ let MongoService = MongoService_1 = class MongoService {
         return __awaiter(this, void 0, void 0, function* () {
             if (docId) {
                 try {
-                    yield this.mongo.collection(collectionName).deleteOne({ id: docId });
+                    yield this.mongoDb.collection(collectionName).deleteOne({ id: docId });
                 }
                 catch (e) {
                     console.log('cannot delete specific doc ', e);
@@ -280,7 +219,7 @@ let MongoService = MongoService_1 = class MongoService {
             }
             else {
                 try {
-                    yield this.mongo.collection(collectionName).deleteMany({});
+                    yield this.mongoDb.collection(collectionName).deleteMany({});
                 }
                 catch (e) {
                     console.log('cannot delete docs ', e);
@@ -290,7 +229,7 @@ let MongoService = MongoService_1 = class MongoService {
         });
     }
 };
-MongoService = MongoService_1 = __decorate([
+MongoService = __decorate([
     singleton_1.singleton
 ], MongoService);
 exports.MongoService = MongoService;

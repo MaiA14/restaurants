@@ -42,9 +42,9 @@ let DBService = class DBService {
             return yield this.db.add(collection, data);
         });
     }
-    get(collection, docId, where, orderBy, limit) {
+    get(collection, docId, where) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.db.get(collection, docId, where, orderBy, limit);
+            return yield this.db.get(collection, docId, where);
         });
     }
     set(collection, docId, data, shouldMerge) {

@@ -1,10 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ORDER_BY_DIRECTION = exports.OPERANDS = exports.COLLECTION = exports.DBS = void 0;
+exports.ORDER_BY_DIRECTION = exports.OPERANDS = exports.COLLECTION = exports.ENV = exports.DBS = void 0;
 exports.DBS = {
     MONGO: 'mongo'
 };
+exports.ENV = {
+    PROD: 'prod'
+};
 exports.COLLECTION = {
+    ENVIRONMENTS: 'environments',
     RESTAURANTS: 'restaurants',
     USERS: 'users'
 };

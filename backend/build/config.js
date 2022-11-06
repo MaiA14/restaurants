@@ -8,7 +8,13 @@ const SERVER = {
     port: SERVER_PORT,
     ip: SERVER_IP
 };
+const ROLES_LIST = {
+    ADMIN: 'admin',
+    MANAGER: 'manager',
+    WAITER: 'waiter'
+};
 const config = {
-    server: SERVER
+    server: SERVER,
+    roles: ROLES_LIST
 };
 exports.default = config;

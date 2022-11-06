@@ -18,7 +18,7 @@ class App {
     }
     initializeMiddlewares() {
         const corsOptions = {
-            origin: '*',
+            origin: 'http://localhost:3000',
             credentials: true
         };
         this.app.use((0, cors_1.default)(corsOptions));
