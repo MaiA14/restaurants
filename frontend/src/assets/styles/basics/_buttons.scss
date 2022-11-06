@@ -16,6 +16,7 @@
     cursor: pointer;
 }
 
+
 .app-button:hover {
     background-color: $clr1;
     opacity: 0.8;
@@ -30,4 +31,9 @@
     background-color: $clr2;
     opacity: .8;
     transition: opacity 0.5s ease-in-out;
+}
+
+
+.btn-app-style{
+    color: $clr3 !important;
 }

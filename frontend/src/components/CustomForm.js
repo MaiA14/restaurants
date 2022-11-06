@@ -36,7 +36,7 @@ const CustomForm = ({ onSubmit, mode, restaurant }) => {
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Modal heading</Modal.Title>
+                    <Modal.Title>{mode === 'update' ? 'Update restaurant': 'Add restaurant'}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
@@ -86,7 +86,7 @@ const CustomForm = ({ onSubmit, mode, restaurant }) => {
                     <Button variant="secondary" onClick={handleClose}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={handleSubmit}>
+                    <Button  className='btn-app-style' onClick={handleSubmit}>
                         Save Changes
                     </Button>
                 </Modal.Footer>
