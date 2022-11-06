@@ -39,7 +39,7 @@ App includes authentication
 )
 
 Successfuly authentication leads to management page
-![Image](https://res.cloudinary.com/dtwqtpteb/image/upload/v1667694795/j4f9tcxyziw5qdknorxp.png
+![Image](https://res.cloudinary.com/dtwqtpteb/image/upload/v1667695271/hkc55texov6ft5czwny8.png
 )
 
 In case one of the details is incorrect, you are blocked by the system with a message
