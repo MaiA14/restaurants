@@ -11,7 +11,7 @@ const login = async (credentials) => {
 
 const signup = async (credentials) => {
   console.log('signup');
-  HttpService.post(`${authEndpoint}/signup`, credentials);
+  await HttpService.post(`${authEndpoint}/signup`, credentials);
 }
 
 const logout = async () => {
