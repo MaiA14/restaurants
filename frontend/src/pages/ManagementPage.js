@@ -56,6 +56,18 @@ export const ManagementPage = () => {
   }
   
 
+  const handleDeactivate = async (id) => {
+    try {
+      await RestaurantService.deactivateRestaurant(id);
+      restaurants = await RestaurantService.getUserRestaurants();
+      setRestaurants(restaurants);
+    } catch (e) {
+      if (e.response.status === 401) { // the specified user has no premission to delete
+        swal("Premission denied.");
+      }
+    }
+  }
+
   const handleDelete = async (id) => {
     try {
       await RestaurantService.deleteRestaurant(id);
@@ -81,8 +93,9 @@ export const ManagementPage = () => {
               key={index}
               index={index}
               restaurant={restaurant}
-              handleDelete={handleDelete}
+              handleDeactivate={handleDeactivate}
               handleUpdate={handleUpdate}
+              handleDelete={handleDelete}
             />
           ))}
         </div>

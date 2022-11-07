@@ -33,6 +33,12 @@ export default class RestaurantsController {
             this.add
         );
         this.router.post(
+            this.path + '/deactivate/:id',
+            VerifyJWT.verifyJWT,
+            VerifyRoles.verifyRoles(config.roles.ADMIN),
+            this.deactivate
+        );
+        this.router.delete(
             this.path + '/delete/:id',
             VerifyJWT.verifyJWT,
             VerifyRoles.verifyRoles(config.roles.ADMIN),
@@ -127,9 +133,9 @@ export default class RestaurantsController {
         }
     }
 
-    public async delete(req: any, res: any) {
+    public async deactivate(req: any, res: any) {
         if (!req.params.id) {
-            res.status(404).send('Error 1 - could not delete restuarnt');
+            res.status(404).send('Error 1 - could not deactivate restuarnt');
             return;
         }
 
@@ -137,8 +143,24 @@ export default class RestaurantsController {
             const updatedRestaurant = await new DBService().set(COLLECTION.RESTAURANTS, req.params.id, { 'active': 'inactive' }, true);
             res.send(updatedRestaurant);
         } catch (e) {
+            res.status(404).send('Error 2 - could not deactivate restaurant');
+            console.log('cannot deactivate restaurant', e);
+            return;
+        }
+    }
+
+    public async delete(req: any, res: any) {
+        if (!req.params.id) {
+            res.status(404).send('Error 1 - could not deactivate restuarnt');
+            return;
+        }
+
+        try {
+            await new DBService().delete(COLLECTION.RESTAURANTS, req.params.id);
+            res.send();
+        } catch (e) {
             res.status(404).send('Error 2 - could not delete restaurant');
-            console.log('cannot get restaurant', e);
+            console.log('cannot delete restaurant', e);
             return;
         }
     }
