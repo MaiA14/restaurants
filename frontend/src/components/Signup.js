@@ -16,17 +16,23 @@ export class Signup extends Component {
     let value = ev.target.value;
     this.setState({ [field]: value });
   };
+  
+  onChange = (ev) => {
+    const role = ev.target.value;
+    ev.target.value = role;
+    this.setState({ role });
+  };
 
   onSignup = async () => {
     console.log('test')
     const user = this.state;
-    if (user.name &&  user.email && user.role && user.password && user.restaurants) {
-        try {
-            await UserService.signup(user);
-        }
-        catch(e) {
-            console.error(e);
-        }
+    if (user.name && user.email && user.role && user.password && user.restaurants) {
+      try {
+        await UserService.signup(user);
+      }
+      catch (e) {
+        console.error(e);
+      }
     }
   };
 
@@ -36,21 +42,35 @@ export class Signup extends Component {
 
   render() {
     return (
-        <div className="container" onKeyUp={(ev) => this.onCheckForm(ev)}>
-          <div className="inputs-wrapper">
-            <input type='text' className="form-input" placeholder='Name'
+      <div className="container" onKeyUp={(ev) => this.onCheckForm(ev)}>
+        <div className="inputs-wrapper">
+          <input type='text' className="form-input" placeholder='Name'
             onChange={this.changeInput} name='name'></input>
-            <input type='password' className="form-input" placeholder='Password'
+          <input type='password' className="form-input" placeholder='Password'
             onChange={this.changeInput} name='password'></input>
-            <input type='text' className="form-input" placeholder='Role' 
-            onChange={this.changeInput} name='role'></input>
-            <input type='email' className="form-input" placeholder='Email' 
+
+
+          <select
+            value={this.state.role}
+            onChange={this.onChange}
+          >
+            <option value="" disabled selected>
+              {this.state.role ? this.state.role : "Role"}{" "}
+            </option>
+            <option value="admin">Admin</option>
+            <option value="manager">Manager</option>
+            <option value="wiater">Waiter</option>
+          </select>
+
+
+
+          <input type='email' className="form-input" placeholder='Email'
             onChange={this.changeInput} name='email'></input>
-                  <input type='text' className="form-input" placeholder='Restaurants' 
+          <input type='text' className="form-input" placeholder='Restaurants'
             onChange={this.changeInput} name='restaurants'></input>
-            <button className="app-button" onClick={this.onSignup}>Signup</button>
-            </div>
+          <button className="app-button" onClick={this.onSignup}>Signup</button>
         </div>
+      </div>
     );
   }
 }
