@@ -23,7 +23,7 @@ export default class AuthController {
     }
 
     public async signup(req: any, res: any) {
-        const { name, email, password, role, restaurant } = req.body;
+        const { name, email, password, role, restaurants } = req.body;
         if (!email || !password) {
             return res.status(400).json(({ 'message': 'Email and password are required.' }));
         }
@@ -34,7 +34,7 @@ export default class AuthController {
             //encrypt the password
             const hashedPwd = await bcrypt.hash(password, 10);
             //store the new user
-            const newUser = { "name": name, "email": email, "password": hashedPwd, "role": role, "restaurant": restaurant };
+            const newUser = { "name": name, "email": email, "password": hashedPwd, "role": role, "restaurants": [restaurants] };
             await new DBService().set(COLLECTION.USERS, email, newUser);
             res.status(201).json({ 'success': `New user ${newUser.email} created!` });
         } catch (e: any) {

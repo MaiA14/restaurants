@@ -6,7 +6,7 @@ export class Signup extends Component {
     name: '',
     email: '',
     role: '',
-    restaurant: '',
+    restaurants: '',
     password: ''
   };
 
@@ -20,7 +20,7 @@ export class Signup extends Component {
   onSignup = async () => {
     console.log('test')
     const user = this.state;
-    if (user.name &&  user.email && user.role && user.password && user.restaurant) {
+    if (user.name &&  user.email && user.role && user.password && user.restaurants) {
         try {
             await UserService.signup(user);
         }
@@ -46,8 +46,8 @@ export class Signup extends Component {
             onChange={this.changeInput} name='role'></input>
             <input type='email' className="form-input" placeholder='Email' 
             onChange={this.changeInput} name='email'></input>
-                  <input type='text' className="form-input" placeholder='Restaurant' 
-            onChange={this.changeInput} name='restaurant'></input>
+                  <input type='text' className="form-input" placeholder='Restaurants' 
+            onChange={this.changeInput} name='restaurants'></input>
             <button className="app-button" onClick={this.onSignup}>Signup</button>
             </div>
         </div>

@@ -76,7 +76,7 @@ export default class RestaurantsController {
                     console.log('res', restaurantData);
                     if (!restaurantData.chain) {
                         // find the chain of the restaurant
-                        let whereChain: any = { 'chain': { operand: OPERANDS.EQUALS, value: restaurantData.name }}
+                        let whereChain: any = { 'chain': { operand: OPERANDS.EQUALS, value: restaurantData.name } }
                         whereChain['chain'] = { operand: OPERANDS.EQUALS, value: restaurantData.name };
                         const restaurants = await new DBService().get(COLLECTION.RESTAURANTS, null, whereChain);
                         // merge restaurants with chain and regular restaurants
@@ -108,14 +108,14 @@ export default class RestaurantsController {
         }
 
         try {
-            let where : any = {};
+            let where: any = {};
             where['name'] = { operand: OPERANDS.EQUALS, value: req.body.name };
             const restaurant = await new DBService().get(COLLECTION.RESTAURANTS, null, where);
 
             // aviod adding restaurant with the same name
             if (restaurant.length > 0) {
                 res.status(500).send('Error 2 - restaurant already exists');
-                return; 
+                return;
             }
 
             const newRestaurants = await new DBService().add(COLLECTION.RESTAURANTS, req.body);
@@ -134,7 +134,7 @@ export default class RestaurantsController {
         }
 
         try {
-            const updatedRestaurant = await new DBService().set(COLLECTION.RESTAURANTS, req.params.id, {'active': 'inactive'}, true);
+            const updatedRestaurant = await new DBService().set(COLLECTION.RESTAURANTS, req.params.id, { 'active': 'inactive' }, true);
             res.send(updatedRestaurant);
         } catch (e) {
             res.status(404).send('Error 2 - could not delete restaurant');
@@ -148,6 +148,27 @@ export default class RestaurantsController {
             res.status(404).send('Error 1 - could not update restuarnt details');
             return;
         }
+
+        // update users restaurants according the new value of the restaurant 
+        try {
+            const currentDoc = await new DBService().get(COLLECTION.RESTAURANTS, req.params.id);
+            const restaurant = currentDoc.name;
+            const whereByRestaurant: any = {};
+            whereByRestaurant['restaurants'] = { operand: OPERANDS.EQUALS, value: restaurant };
+            const usersToUpdate = await new DBService().get(COLLECTION.USERS, null, whereByRestaurant);
+
+            for (let i = 0; i < usersToUpdate.length; i++) {
+                if (usersToUpdate[i].restaurants.includes(restaurant)) {
+                    usersToUpdate[i].restaurants.splice(1, 1, req.body.name);
+                }
+
+                console.log(usersToUpdate);
+                await new DBService().set(COLLECTION.USERS, usersToUpdate[i].id, usersToUpdate[i]);
+            }
+        } catch (e) {
+            console.log('Error 2 - cannot update users restaurants ', e);
+        }
+
 
         if (req.role === config.roles.MANAGER) {
             const updatedDetails: any = {};
@@ -163,7 +184,7 @@ export default class RestaurantsController {
                 const updatedRestaurant = await new DBService().set(COLLECTION.RESTAURANTS, req.params.id, updatedDetails);
                 res.send(updatedRestaurant);
             } catch (e) {
-                res.status(404).send('Error 2 - could not update restaurant');
+                res.status(404).send('Error 3 - could not update restaurant');
                 console.log('cannot get restaurant', e);
                 return;
             }
@@ -172,7 +193,7 @@ export default class RestaurantsController {
                 const updatedRestaurant = await new DBService().set(COLLECTION.RESTAURANTS, req.params.id, req.body);
                 res.send(updatedRestaurant);
             } catch (e) {
-                res.status(404).send('Error 2 - could not update restaurant');
+                res.status(404).send('Error 4 - could not update restaurant');
                 console.log('cannot get restaurant', e);
                 return;
             }
